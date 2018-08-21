@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sf.shiva.oms.ht.mapper.extend.SysResourceInfoExtMapper">
+
+	<resultMap id="BaseResultMap" type="com.sf.shiva.oms.ht.domain.SysResourceInfo">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="sys_resource_uid" jdbcType="VARCHAR" property="sysResourceUid" />
+		<result column="sys_resource_name" jdbcType="VARCHAR" property="sysResourceName" />
+		<result column="sys_resource_level" jdbcType="INTEGER"
+			property="sysResourceLevel" />
+		<result column="sys_resource_path" jdbcType="VARCHAR" property="sysResourcePath" />
+		<result column="sys_parent_uid" jdbcType="VARCHAR" property="sysParentUid" />
+		<result column="createtime" jdbcType="VARCHAR" property="createtime" />
+		<result column="updatetime" jdbcType="VARCHAR" property="updatetime" />
+		<result column="updateuid" jdbcType="VARCHAR" property="updateuid" />
+		<result column="del_status" jdbcType="BIT" property="delStatus" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, sys_resource_uid, sys_resource_name,
+		sys_resource_level,
+		sys_resource_path, sys_parent_uid,
+		createtime,
+		updatetime, updateuid, del_status
+	</sql>
+
+	<resultMap id="SysRoleResourceInfoResultMap" type="com.sf.shiva.oms.ht.domain.SysRoleResourceInfo">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="sys_resource_uid" jdbcType="VARCHAR" property="sysResourceUid" />
+		<result column="sys_resource_name" jdbcType="VARCHAR" property="sysResourceName" />
+		<result column="sys_resource_level" jdbcType="INTEGER"
+			property="sysResourceLevel" />
+		<result column="sys_resource_path" jdbcType="VARCHAR" property="sysResourcePath" />
+		<result column="sys_parent_uid" jdbcType="VARCHAR" property="sysParentUid" />
+		<result column="createtime" jdbcType="VARCHAR" property="createtime" />
+		<result column="updatetime" jdbcType="VARCHAR" property="updatetime" />
+		<result column="updateuid" jdbcType="VARCHAR" property="updateuid" />
+		<result column="del_status" jdbcType="BIT" property="delStatus" />
+		<result column="bindState" property="bindState" jdbcType="BIT" />
+	</resultMap>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_resource_info
+		where id = #{id,jdbcType=BIGINT}
+		and del_status =
+		0
+	</select>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.sf.shiva.oms.ht.domain.SysResourceInfo">
+		update sys_resource_info
+		<set>
+			<if test="sysResourceUid != null">
+				sys_resource_uid = #{sysResourceUid,jdbcType=VARCHAR},
+			</if>
+			<if test="sysResourceName != null">
+				sys_resource_name = #{sysResourceName,jdbcType=VARCHAR},
+			</if>
+			<if test="sysResourceLevel != null">
+				sys_resource_level =
+				#{sysResourceLevel,jdbcType=INTEGER},
+			</if>
+			<if test="sysResourcePath != null">
+				sys_resource_path = #{sysResourcePath,jdbcType=VARCHAR},
+			</if>
+			<if test="sysParentUid != null">
+				sys_parent_uid = #{sysParentUid,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				createtime = #{createtime,jdbcType=VARCHAR},
+			</if>
+			<if test="updatetime != null">
+				updatetime = #{updatetime,jdbcType=VARCHAR},
+			</if>
+			<if test="updateuid != null">
+				updateuid = #{updateuid,jdbcType=VARCHAR},
+			</if>
+			<if test="delStatus != null">
+				del_status = #{delStatus,jdbcType=BIT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+		and del_status = 0
+	</update>
+
+	<update id="updateToDeleteStatus" parameterType="java.lang.Long">
+		update
+		sys_resource_info
+		set del_status = 1
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="getResourceList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_resource_info
+		where del_status = 0
+	</select>
+
+	<select id="getResourceByRoleId" resultMap="SysRoleResourceInfoResultMap"
+		parameterType="java.lang.String">
+		SELECT
+		<include refid="Base_Column_List" />
+		,
+		CASE
+		WHEN c.sys_role_uid IS NULL THEN
+		FALSE
+		ELSE
+		TRUE
+		END AS bindState
+		FROM
+		sys_resource_info res
+		LEFT JOIN (
+		SELECT
+		rel.sys_role_uid
+		sys_role_uid,
+		rel.sys_resource_uid sys_resourceuid
+		FROM
+		sys_role_resource rel,
+		sys_role_info r
+		WHERE
+		rel.sys_role_uid = #{roleId}
+		AND r.sys_role_uid = rel.sys_role_uid
+		) c ON res.sys_resource_uid =
+		c.sys_resourceuid
+		WHERE
+		res.del_status = 0
+		ORDER BY
+		res.sys_resource_uid
+	</select>
+
+	<delete id="deleteByRoleId" parameterType="java.lang.String">
+		delete from
+		sys_role_resource where sys_role_uid=#{roleId}
+	</delete>
+
+	<insert id="insertRoleResourceList">
+		insert into sys_role_resource (sys_role_uid, sys_resource_uid) values
+		<foreach item="item" collection="resList" separator="," open=""
+			close="" index="">
+			(#{roleId}, #{item,jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+	
+	<select id="selectSideMenu" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select distinct res.*
+		from sys_user_info u, sys_user_role
+		ur, sys_role_info r,
+		sys_role_resource rr, sys_resource_info res
+		where
+		u.id=#{id,jdbcType=BIGINT} and u.sys_user_uid =
+		ur.sys_user_uid and
+		u.del_status = 0
+		and ur.sys_role_uid=r.sys_role_uid
+		and r.sys_role_uid =
+		rr.sys_role_uid and r.del_status = 0
+		and
+		rr.sys_resource_uid =
+		res.sys_resource_uid and res.sys_resource_level
+		= 1 and res.del_status
+		= 0
+		ORDER BY res.sort, res.id
+	</select>
+	
+	<select id="selectChildMenu" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select distinct res.*
+		from sys_user_info u, sys_user_role
+		ur, sys_role_info r,
+		sys_role_resource rr, sys_resource_info res
+		where
+		u.id=#{id,jdbcType=BIGINT} and u.sys_user_uid =
+		ur.sys_user_uid and
+		u.del_status = 0
+		and ur.sys_role_uid=r.sys_role_uid
+		and r.sys_role_uid =
+		rr.sys_role_uid and r.del_status = 0
+		and
+		rr.sys_resource_uid =
+		res.sys_resource_uid and res.sys_resource_level
+		= 2 and res.del_status
+		= 0
+		ORDER BY res.sort , res.id
+	</select>
+
+</mapper>

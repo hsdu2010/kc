@@ -1,0 +1,412 @@
+<section class="content-header">
+	<h1>
+		Redis管理<small> Redis查询</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> 首页</a></li>
+		<li><a href="#"><i class="fa fa-tasks"></i> Redis管理</a></li>
+		<li class="active"><i class="fa fa-gears"></i> Redis查询</li>
+	</ol>
+</section>
+<div class="content">
+	<!-- 总体布局模式 .container-fluid 类用于100%宽度-->
+	<div id="inner-content" class="container-fluid">
+		<div id="inner-row" class="row">
+			<div class="panel panel-default">
+				<!-- panel面板主体 -->
+				<div class="panel-body">
+				    <form role="form" class="form-inline" id="searchForm" style="float:left;margin-bottom:16px;" onsubmit="$.redisCfgUtils.submit.search();return false;">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="moduleName" placeholder="输入模块名搜索">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary"
+                            onclick="$.redisCfgUtils.submit.search()">搜索</button>
+                    </form>
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-left"
+							id="redisCfgTableToolbar">
+							<button id="addButton" style="background: #51B7CF"
+								class="btn btn-info" onclick="$.redisCfgUtils.button.add()">新增</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 panel-default">
+							<div class="panel panel-body">
+								<div class="panel-content">
+									<table id="redisCfgTable" data-toggle="table"
+										data-page-list="[10,20,30]" data-pagination="true"
+										data-cache="false" data-detail-view="false"
+										data-show-refresh="true" data-show-columns="false"
+										data-filter-control="false" data-filter-show-clear="false"
+										data-toolbar="#redisCfgTableToolbar"
+										data-side-pagination="server">
+										<thead>
+											<tr>
+												<th class="hidden" data-field="id"></th>
+												<th data-field="moduleName" data-align="center">模块名</th>
+												<th data-field="address" data-align="center">连接地址</th>
+												<th data-field="createEmp" data-align="center">创建人</th>
+												<th data-field="createTm" data-align="center"  data-width="100">创建时间</th>
+												<th data-field="operation" data-align="center"
+													data-formatter="$.redisCfgUtils.formatter.operation" data-width="120">操作</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 新增模态框 -->
+			<div class="modal fade" id="addRedisCfgDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width: 53%">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">新增</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="addRedisCfgForm"
+									novalidate="novalidate">
+
+									<div class="form-group">
+										<div class="col-sm-2" style="margin-bottom: 10px;">
+											<strong>模块名：</strong>
+										</div>
+										<div class="col-sm-12">
+											<input type="text" class="form-control" name="moduleName"
+												required placeholder="必填">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-2" style="margin-bottom: 10px;">
+											<strong>连接地址：</strong>
+										</div>
+										<div class="col-sm-12">
+											<input type="text" class="form-control" name="address"
+												required
+												placeholder="格式：使用哨兵——ip1:port1;ip2:port2   不使用哨兵——ip:port">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-2" style="margin-bottom: 10px;">
+											<strong>主节点名：</strong>
+										</div>
+										<div class="col-sm-12">
+											<input type="text" class="form-control" name="masterName"
+												placeholder="使用哨兵连接时必须填写主节点名">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-2" style="margin-bottom: 10px;">
+											<strong>密码：</strong>
+										</div>
+										<div class="col-sm-12">
+											<input type="text" class="form-control" name="password"
+												required placeholder="redis密码">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-9 col-xs-9 col-lg-9">
+											<div class="col-sm-6"
+												style="margin-bottom: 10px; padding-left: 0px">
+												<strong>超时时间：</strong>
+											</div>
+											<div class="col-sm-12" style="padding-left: 0px;">
+												<input type="text" class="form-control" name="timeout"
+													required placeholder="必填，默认60000" value="60000">
+											</div>
+										</div>
+										<div class="col-sm-3 col-xs-3 col-lg-3">
+											<div class="col-sm-12"
+												style="margin-bottom: 10px; padding-left: 0px;">
+												<strong>是否使用哨兵：</strong>
+											</div>
+											<div class="col-sm-12"
+												style="padding-left: 0px; padding-right: 0px;">
+												<select class="form-control" name="useSentinel">
+													<option value="1">是</option>
+													<option value="2">否</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-9 col-xs-9 col-lg-9">
+											<div class="col-sm-6"
+												style="margin-bottom: 10px; padding-left: 0px">
+												<strong>key：</strong>
+											</div>
+											<div class="col-sm-12" style="padding-left: 0px;">
+												<input type="text" class="form-control" name="queryKeys"
+												    placeholder="模糊查询, 使用*代替模糊的字符"
+													>
+											</div>
+										</div>
+										<div class="col-sm-3 col-xs-3 col-lg-3">
+											<div class="col-sm-12"
+												style="margin-bottom: 10px; padding-left: 0px;">
+												<strong>操作方式：</strong>
+											</div>
+											<div class="col-sm-12"
+												style="padding-left: 0px; padding-right: 0px;">
+												<select class="form-control operateType" name="operateType">
+													<option value="1">查询</option>
+													<option value="2">删除</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="form-group queryValuesWrap">
+                                        <div class="col-sm-2" style="margin-bottom: 10px;">
+                                            <strong>value：</strong>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" name="queryValues" placeholder="筛选值，为空则不筛选"
+                                                >
+                                        </div>
+                                    </div>
+									<div class="form-group">
+										<div class="col-sm-2" style="margin-bottom: 10px;">
+											<strong>操作结果：</strong>
+										</div>
+										<div class="col-sm-12">
+										  <div class="responseWrap" style="height:250px;overflow-y:scroll;border:1px solid #ccc;">
+										  </div>
+<!-- 											<textarea rows="8" class="form-control" name="operateResult"></textarea> -->
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<span class="pull-left">
+								<button type="button" class="btn btn-info" onclick="$.redisCfgUtils.submit.queryRedis('#addRedisCfgForm')">执行操作</button>
+								<span class="text-danger"></span>
+							</span> <span class="pull-right">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary"
+									onclick="$.redisCfgUtils.submit.addRedisCfg()">保存</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 修改模态框 -->
+			<div class="modal fade" id="updateRedisCfgDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width: 53%">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">选择</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form"
+									id="updateRedisCfgForm" novalidate="novalidate">
+									<div class="form-group">
+										<input name="id" type="hidden">
+									</div>
+									<div class="panel-group" id="queryGroups">
+									   <div style="margin-top:8px" class="panel panel-default">
+									    <div class="panel-heading">
+									     <a data-toggle="collapse" href="javascript:void(0)"><span class="pull-left">基本信息</span><i class="fa fa-angle-left pull-right"></i>
+									      <div style="clear:both"></div></a>
+									    </div>
+									    <div class="panel-body" style="display:none">
+									                    <div class="form-group">
+									                    <div class="col-sm-2" style="margin-bottom: 10px;">
+									                        <strong>模块名：</strong>
+									                    </div>
+									                    <div class="col-sm-12">
+									                        <input type="text" class="form-control" name="moduleName"
+									                            required placeholder="必填">
+									                    </div>
+									                </div>
+									                <div class="form-group">
+									                    <div class="col-sm-2" style="margin-bottom: 10px;">
+									                        <strong>连接地址：</strong>
+									                    </div>
+									                    <div class="col-sm-12">
+									                        <input type="text" class="form-control" name="address"
+									                            required
+									                            placeholder="格式：使用哨兵——ip1:port1;ip2:port2   不使用哨兵——ip:port">
+									                    </div>
+									                </div>
+									                <div class="form-group">
+									                    <div class="col-sm-2" style="margin-bottom: 10px;">
+									                        <strong>主节点名：</strong>
+									                    </div>
+									                    <div class="col-sm-12">
+									                        <input type="text" class="form-control" name="masterName"
+									                            placeholder="使用哨兵连接时必须填写主节点名">
+									                    </div>
+									                </div>
+									                <div class="form-group">
+									                    <div class="col-sm-2" style="margin-bottom: 10px;">
+									                        <strong>密码：</strong>
+									                    </div>
+									                    <div class="col-sm-12">
+									                        <input type="password" class="form-control" name="password"
+									                            required placeholder="redis密码">
+									                    </div>
+									                </div>
+									                <div class="form-group">
+									                    <div class="col-sm-9 col-xs-9 col-lg-9">
+									                        <div class="col-sm-6"
+									                            style="margin-bottom: 10px; padding-left: 0px">
+									                            <strong>超时时间：</strong>
+									                        </div>
+									                        <div class="col-sm-12" style="padding-left: 0px;">
+									                            <input type="text" class="form-control" name="timeout"
+									                                required placeholder="必填，默认60000" value="60000">
+									                        </div>
+									                    </div>
+									                    <div class="col-sm-3 col-xs-3 col-lg-3">
+									                        <div class="col-sm-12"
+									                            style="margin-bottom: 10px; padding-left: 0px;">
+									                            <strong>是否使用哨兵：</strong>
+									                        </div>
+									                        <div class="col-sm-12"
+									                            style="padding-left: 0px; padding-right: 0px;">
+									                            <select class="form-control" name="useSentinel">
+									                                <option value="1">是</option>
+									                                <option value="2">否</option>
+									                            </select>
+									                        </div>
+									                    </div>
+									                </div>
+									    </div>
+									   </div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-9 col-xs-9 col-lg-9">
+											<div class="col-sm-6"
+												style="margin-bottom: 10px; padding-left: 0px">
+												<strong>key：</strong>
+											</div>
+											<div class="col-sm-12" style="padding-left: 0px;">
+												<input type="text" class="form-control" name="queryKeys"
+													placeholder="模糊查询, 使用*代替模糊的字符">
+											</div>
+										</div>
+										<div class="col-sm-3 col-xs-3 col-lg-3">
+											<div class="col-sm-12"
+												style="margin-bottom: 10px; padding-left: 0px;">
+												<strong>操作方式：</strong>
+											</div>
+											<div class="col-sm-12"
+												style="padding-left: 0px; padding-right: 0px;">
+												<select class="form-control operateType" name="operateType">
+													<option value="1">查询</option>
+													<option value="2">删除</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="form-group queryValuesWrap">
+                                        <div class="col-sm-2" style="margin-bottom: 10px;">
+                                            <strong>value：</strong>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" name="queryValues" placeholder="过滤值，为空则不过滤值"
+                                                >
+                                        </div>
+                                    </div>
+									<div class="form-group">
+										<div class="col-sm-2" style="margin-bottom: 10px;">
+											<strong>操作结果：</strong>
+										</div>
+										<div class="col-sm-12">
+										      <div class="responseWrap" style="height:250px;overflow-y:scroll;border:1px solid #ccc;">
+										      
+										      </div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<span class="pull-left">
+								<button type="button" class="btn btn-info" onclick="$.redisCfgUtils.submit.queryRedis('#updateRedisCfgForm')">执行操作</button>
+								<span class="text-danger"></span>
+							</span> <span class="pull-right">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary"
+									onclick="$.redisCfgUtils.submit.updateRedisCfg()">保存</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 删除 模态框-->
+			<div class="modal fade bs-example-modal-sm" id="deleteRedisCfgDialog"
+				role="dialog" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">删除</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form"
+									id="deleteRedisCfgForm" novalidate="novalidate">
+
+
+									<input name="id" id="idForDel" type="hidden">
+
+									<h3 class="text-danger text-center">请确认是否删除?</h3>
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<div style="display: inline;">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-danger"
+									onclick="$.redisCfgUtils.submit.deleteByPrimaryKey()">确定
+								</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal fade bs-example-modal-lg" id="displayResponseDialog" role="dialog"
+                aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">报文内容</h4>
+                        </div>
+                        <div class="modal-body" style="padding-top:0px;">
+                            <textarea name="message" spellcheck="false" class="form-control" style="overflow-x: scroll"
+                                                rows="20" id="responseContent"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+		</div>
+	</div>
+</div>
+<script src="../assets/js/redisCfg.js" type="text/javascript"></script>

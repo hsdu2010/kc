@@ -1,0 +1,99 @@
+<section class="content-header">
+	<h1>
+		自助查询服务<small>快捷自助查询</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> 首页</a></li>
+		<li><a href="#"><i class="fa fa-tasks"></i> 自助查询服务</a></li>
+		<li class="active"><i class="fa fa-search"></i> 快捷自助查询</li>
+	</ol>
+</section>
+<div class="content">
+	<!-- 总体布局模式 .container-fluid 类用于100%宽度-->
+	<div id="inner-content" class="container-fluid">
+		<div id="inner-row" class="row">
+			<div class="panel panel-default">
+				<!-- panel面板主体 -->
+				<div class="panel-body">
+					<form role="form" class="form-inline" id="searchForm"
+						style="float: left; margin-bottom: 16px;"
+						onsubmit="$.quickQuery.loadQueryCfg(0,10);return false;">
+						<div class="form-group">
+							<div class="input-group">
+								<input type="text" class="form-control" name="sqlName"
+									placeholder="输入查询名搜索">
+							</div>
+						</div>
+
+						<button type="button" class="btn btn-default"
+							onclick="$.quickQuery.loadQueryCfg(0,10)"><i class="glyphicon glyphicon-search"></i></button>
+					</form>
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 panel-default">
+							<div class="panel-group" id="queryGroups">
+								<!-- <div class="panel panel-success hidden">
+									<div class="panel-heading">
+										<a data-toggle="collapse" href="javascript:void(0)"> <span
+											class="pull-left">查询接口</span> <i
+											class="fa fa-angle-left pull-right"></i>
+											<div style="clear: both"></div>
+										</a>
+									</div>
+									<div class="panel-body" style="display: none">
+										<form role="form" class="form-inline">
+											<input type="text" class="form-control" name="id">
+											<button type="button" class="btn btn-primary" onclick="">查询</button>
+										</form>
+										<hr>
+										<div class="result-div">
+										      
+										</div>
+									</div>
+								</div> -->
+							</div>
+							<div id="paginationDiv" class="pagination"
+								style="display: none; width: 100%;">
+								<div id="paginationDetailk" class="pull-left pagination-detail">
+									<span class="pagination-info">显示第<span id="startNum">1</span>到第<span
+										id="endNum">5</span>条记录，总共<span id="totalRecords">7</span>条记录
+									</span> <span class="page-list"> 每页显示 <span
+										class="btn-group droupup">
+											<button type="button" class="btn btn-default dropdown-toggle"
+												data-toggle="dropdown" aria-expanded="false">
+												<span id="pageSize" class="page-size">10</span> <span
+													class="caret"></span>
+											</button>
+											<ul class="dropdown-menu" role="menu">
+												<li><a href="javascript:void(0)"
+													onclick="$.quickQuery.loadQueryCfg(0, 10)">10</a></li>
+												<li><a href="javascript:void(0)"
+													onclick="$.quickQuery.loadQueryCfg(0, 15)">15</a></li>
+												<li><a href="javascript:void(0)"
+													onclick="$.quickQuery.loadQueryCfg(0, 20)">20</a></li>
+											</ul>
+									</span> 条记录
+									</span>
+								</div>
+								<div id="paginationBarDiv" style="margin-top: 0px"
+									class="pagination pull-right">
+									<ul class="pagination" style="margin-top: 0px">
+										<li class="page-first"><a href="javascript:void(0)"
+											onclick="$.quickQuery.turnPage('first')"><<</a></li>
+										<li class="page-pre"><a href="javascript:void(0)"
+											onclick="$.quickQuery.turnPage('pre')"><</a></li>
+										<li class="page-next"><a href="javascript:void(0)"
+											onclick="$.quickQuery.turnPage('next')">></a></li>
+										<li class="page-last"><a href="javascript:void(0)"
+											onclick="$.quickQuery.turnPage('last')">>></a></li>
+									</ul>
+								</div>
+								<div style="clear: both"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="../assets/js/quickQuery.js"></script>

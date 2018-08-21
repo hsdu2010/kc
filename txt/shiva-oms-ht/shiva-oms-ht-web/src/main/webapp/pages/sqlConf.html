@@ -1,0 +1,376 @@
+<section class="content-header">
+	<h1>
+		自助查询服务<small>SQL管理</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> 首页</a></li>
+		<li><a href="#"><i class="fa fa-tasks"></i> 自助查询服务</a></li>
+		<li class="active"><i class="fa fa-gears"></i> SQL管理</li>
+	</ol>
+</section>
+<div class="content">
+	<!-- 总体布局模式 .container-fluid 类用于100%宽度-->
+	<div id="inner-content" class="container-fluid">
+		<div id="inner-row" class="row">
+			<div class="panel panel-default">
+				<!-- panel面板主体 -->
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-left"
+							id="sqlCfgTableToolbar">
+							<button id="addButton" 
+								class="btn btn-default" onclick="$.sqlCfgUtils.button.add()">新增</button>
+								
+						 <form role="form" class="form-inline" id="searchForm"
+	                        style="float: right; margin-bottom: 16px;margin-left:10px;"
+	                        onsubmit="$.sqlCfgUtils.submit.search();return false;">
+	                        <div class="form-group">
+	                            <div class="input-group">
+	                                <input type="text" class="form-control" name="sqlName"
+	                                    placeholder="输入查询名搜索">
+	                            </div>
+	                        </div>
+	
+	                        <button type="button" class="btn btn-default"
+	                            onclick="$.sqlCfgUtils.submit.search()"><i class="glyphicon glyphicon-search"></i></button>
+	                    </form>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 panel-default">
+							<div class="panel panel-body">
+								<div class="panel-content">
+									<table id="sqlCfgTable" data-toggle="table"
+										data-page-list="[10,20,30]" data-pagination="true"
+										data-cache="false" data-detail-view="false"
+										data-show-refresh="true" data-show-columns="false"
+										data-filter-control="false" data-filter-show-clear="false"
+										data-toolbar="#sqlCfgTableToolbar"
+										data-side-pagination="server">
+										<thead>
+											<tr>
+												<th class="hidden" data-field="sqlId"></th>
+												<th data-field="sqlName" data-align="center">查询名</th>
+												<th data-field="sqlStatement" data-align="center">查询语句</th>
+												<th data-field="connName" data-align="center">数据库连接名</th>
+												<th data-field="operation" data-align="center"
+													data-formatter="$.sqlCfgUtils.formatter.operation">操作</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 新增 模态框 -->
+			<div class="modal fade" id="addSqlCfgDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width: 50%">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">新增</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="addSqlCfgForm"
+									novalidate="novalidate">
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label">数据库连接名:</label>
+										<div class="col-sm-9">
+											<select class="form-control" name="dbId"></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">查询名:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="sqlName"
+												required placeholder="必填">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">sql语句:</label>
+										<div class="col-sm-9">
+											<textarea rows="8" spellcheck="false"
+												placeholder="sql参数请用英文问号'?'代替，若有多条sql语句，请用英文分号';'分开"
+												class="form-control" name="sqlStatement" required
+												placeholder="必填"></textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">参数描述:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="paramDesc"
+												placeholder="必填，快捷自助查询参数提示">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">查询结果说明:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="description"
+												placeholder="查询结果字段提示">
+										</div>
+									</div>
+									<div class="form-group hidden">
+										<label class="col-sm-2 control-label">创建人:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="createEmp">
+										</div>
+									</div>
+
+									<div class="form-group hidden">
+										<label class="col-sm-2 control-label">修改人:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="modifyEmp">
+										</div>
+									</div>
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">关闭</button>
+							<button type="button" class="btn btn-primary"
+								onclick="$.sqlCfgUtils.submit.addSqlCfg()">确定</button>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+
+			<!-- 查看 模态框 -->
+			<div class="modal fade" id="showSqlCfgDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width: 50%">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">查看</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="showSqlCfgForm"
+									novalidate="novalidate">
+									<div class="form-group">
+
+										<label class="col-sm-2 control-label">查询名:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="sqlName"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">sql语句:</label>
+										<div class="col-sm-9">
+											<textarea rows="8" spellcheck="false" type="text" class="form-control"
+												name="sqlStatement" readonly></textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">参数描述:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="paramDesc"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">查询结果说明:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="description"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-2 control-label">创建时间:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="createTm"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-2 control-label">创建人:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="createEmp"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-2 control-label">修改时间:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="modifyTm"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-2 control-label">修改人:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="modifyEmp"
+												readonly>
+										</div>
+									</div>
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<div style="display: inline;">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+
+			<!-- 修改 模态框 -->
+			<div class="modal fade" id="updateSqlCfgDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width: 50%">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">修改</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="updateSqlCfgForm"
+									novalidate="novalidate">
+
+									<div class="form-group hidden">
+										<label class="col-sm-2 control-label">sql查询id:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="sqlId" readonly>
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label">数据库连接名:</label>
+										<div class="col-sm-9">
+											<select class="form-control" name="dbId"></select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label">sql语句:</label>
+										<div class="col-sm-9">
+											<textarea rows="8" spellcheck="false" class="form-control" name="sqlStatement"
+												required
+												placeholder="sql参数请用英文问号'?'代替，若有多条sql语句，请用英文分号';'分开"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label">查询名:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="sqlName"
+												required placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label">查询结果说明:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="description">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label">参数描述:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="paramDesc">
+										</div>
+									</div>
+
+									<div class="form-group hidden">
+										<label class="col-sm-2 control-label">修改人:</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="modifyEmp">
+										</div>
+									</div>
+
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<div style="display: inline;">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary"
+									onclick="$.sqlCfgUtils.submit.updateSqlCfg()">确定</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- 删除 模态框-->
+			<div class="modal fade bs-example-modal-sm" id="deleteSqlCfgDialog"
+				role="dialog" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">删除</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="deleteSqlCfgForm"
+									novalidate="novalidate">
+
+
+									<input name="sqlId" id="sqlIdForDel" type="hidden">
+
+									<h3 class="text-danger text-center">请确认是否删除?</h3>
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<div style="display: inline;">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-danger"
+									onclick="$.sqlCfgUtils.submit.deleteByPrimaryKey()">确定
+								</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<style>
+th:nth-child(2), th:last-child {
+	min-width: 152px;
+}
+</style>
+<script src="../assets/js/sqlCfg.js"></script>

@@ -1,0 +1,416 @@
+<section class="content-header">
+	<h1>
+		自助查询服务<small>数据库管理</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> 首页</a></li>
+		<li><a href="#"><i class="fa fa-tasks"></i> 自助查询服务</a></li>
+		<li class="active"><i class="fa fa-gears"></i> 数据库管理</li>
+	</ol>
+</section>
+<div class="content">
+	<!-- 总体布局模式 .container-fluid 类用于100%宽度-->
+	<div id="inner-content" class="container-fluid">
+		<div id="inner-row" class="row">
+			<div class="panel panel-default">
+				<!-- panel面板主体 -->
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-left"
+							id="dbConnCfgTableToolbar">
+							<button id="addButton"
+								class="btn btn-default" onclick="$.dbConnCfgUtils.button.add()">新增</button>
+						  <form role="form" class="form-inline" id="searchForm" style="float:right;margin-left:10px;margin-bottom:16px;" onsubmit="$.dbConnCfgUtils.submit.search();return false;">
+		                        <div class="form-group">
+		                            <div class="input-group">
+		                                <input type="text" class="form-control" name="connName" placeholder="输入连接名搜索">
+		                            </div>
+		                        </div>
+		                        <button type="button" class="btn btn-default"
+		                            onclick="$.dbConnCfgUtils.submit.search()"><i class="glyphicon glyphicon-search"></i></button>
+		                    </form>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 panel-default">
+							<div class="panel panel-body">
+								<div class="panel-content">
+									<table id="dbConnCfgTable" data-toggle="table"
+										data-page-list="[10,15,ALL]" data-pagination="true"
+										data-cache="false" data-detail-view="false"
+										data-show-refresh="true" data-show-columns="false"
+										data-filter-control="false" data-filter-show-clear="false"
+										data-toolbar="#dbConnCfgTableToolbar"
+										data-side-pagination="server">
+										<thead>
+											<tr>
+												<th class="hidden" data-field="dbId"></th>
+												<th data-field="connName" data-align="center">连接名</th>
+												<th data-field="dbName" data-align="center">数据库名</th>
+												<th data-field="host" data-align="center">主机名</th>
+												<!-- <th data-field="db_type" data-align="center">数据库类型</th> -->
+												<th data-field="createEmp" data-align="center">创建人</th>
+												<th data-field="operation" data-align="center"
+													data-formatter="$.dbConnCfgUtils.formatter.operation">操作</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 新增 模态框 -->
+			<div class="modal fade" id="addDbConnCfgDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">新增</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="addDbConnCfgForm"
+									novalidate="novalidate">
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">数据库连接名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="connName"
+												required placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">主机名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="host" required
+												placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">端口号:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="port" required
+												placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">数据库名称:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="dbName"
+												required placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">用户名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="username"
+												required placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">密码:</label>
+										<div class="col-sm-7">
+											<input type="password" class="form-control" name="password"
+												required placeholder="必填">
+										</div>
+									</div>
+
+
+									<div class="form-group hidden">
+										<label class="col-sm-3 control-label">创建人:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="createEmp">
+										</div>
+									</div>
+
+									<div class="form-group hidden">
+										<label class="col-sm-3 control-label">修改人:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="modifyEmp">
+										</div>
+									</div>
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<span class="pull-left">
+								<button type="button" class="btn btn-info"
+									onclick="$.dbConnCfgUtils.connTest('#addDbConnCfgForm',this)">连接测试</button>
+								<span id="addConnTest" class="text-danger"></span>
+							</span> <span class="pull-right">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary"
+									onclick="$.dbConnCfgUtils.submit.addDbConnCfg()">确定</button>
+							</span>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+			<!-- 查看 模态框 -->
+			<div class="modal fade" id="showDbConnCfgDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">查看</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="showDbConnCfgForm"
+									novalidate="novalidate">
+
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">数据库连接名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="connName"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">主机名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="host" readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">端口号:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="port" readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">数据库名称:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="dbName"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">用户名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="username"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group hidden">
+
+										<label class="col-sm-3 control-label">密码:</label>
+										<div class="col-sm-7">
+											<input type="password" class="form-control" name="password"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">创建时间:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="createTm"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">创建人:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="createEmp"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">修改时间:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="modifyTm"
+												readonly>
+										</div>
+									</div>
+									<div class="form-group">
+
+										<label class="col-sm-3 control-label">修改人:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="modifyEmp"
+												readonly>
+										</div>
+									</div>
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<div style="display: inline;">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<!-- 修改 模态框 -->
+			<div class="modal fade" id="updateDbConnCfgDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">修改</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form"
+									id="updateDbConnCfgForm" novalidate="novalidate">
+
+									<div class="form-group hidden">
+										<label class="col-sm-3 control-label">id:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="dbId" readonly>
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">数据库连接名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="connName"
+												required placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">主机名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="host" required
+												placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">端口号:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="port" required
+												placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">数据库名称:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="dbName"
+												required placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">用户名:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="username"
+												required placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">密码:</label>
+										<div class="col-sm-7">
+											<input type="password" class="form-control" name="password"
+												required placeholder="必填">
+										</div>
+									</div>
+
+									<div class="form-group hidden">
+										<label class="col-sm-3 control-label">修改人:</label>
+										<div class="col-sm-7">
+											<input type="text" class="form-control" name="modifyEmp">
+										</div>
+									</div>
+
+								</form>
+							</div>
+
+						</div>
+
+						<div class="text-center modal-footer">
+							<span class="pull-left">
+								<button type="button" class="btn btn-info"
+									onclick="$.dbConnCfgUtils.connTest('#updateDbConnCfgForm',this)">连接测试</button>
+								<span id="updateConnTest" class="text-danger"></span>
+							</span> <span class="pull-right">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary"
+									onclick="$.dbConnCfgUtils.submit.updateDbConnCfg()">确定
+								</button>
+							</span>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<!-- 删除 模态框-->
+			<div class="modal fade bs-example-modal-sm"
+				id="deleteDbConnCfgDialog" role="dialog" aria-hidden="true"
+				data-backdrop="static">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">删除</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form"
+									id="deleteDbConnCfgForm" novalidate="novalidate">
+
+
+									<input name="dbId" id="dbIdForDel" type="hidden">
+
+									<h3 class="text-danger text-center">请确认是否删除?</h3>
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<div style="display: inline;">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-danger"
+									onclick="$.dbConnCfgUtils.submit.deleteByPrimaryKey()">确定
+								</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="../assets/js/dbConnCfg.js" type="text/javascript"></script>

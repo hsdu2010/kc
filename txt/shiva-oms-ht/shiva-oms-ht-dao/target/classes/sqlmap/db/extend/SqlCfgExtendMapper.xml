@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sf.shiva.oms.ht.mapper.extend.SqlCfgExtendMapper">
+  <resultMap id="BaseResultMap" type="com.sf.shiva.oms.ht.domain.SqlCfg">
+    <id column="sql_id" jdbcType="VARCHAR" property="sqlId" />
+    <result column="db_id" jdbcType="VARCHAR" property="dbId" />
+    <result column="sql_statement" jdbcType="VARCHAR" property="sqlStatement" />
+    <result column="sql_name" jdbcType="VARCHAR" property="sqlName" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="param_desc" jdbcType="VARCHAR" property="paramDesc" />
+    <result column="create_tm" jdbcType="TIMESTAMP" property="createTm" />
+    <result column="create_emp" jdbcType="VARCHAR" property="createEmp" />
+    <result column="modify_tm" jdbcType="TIMESTAMP" property="modifyTm" />
+    <result column="modify_emp" jdbcType="VARCHAR" property="modifyEmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sql_id, db_id, sql_statement, sql_name, description, param_desc, create_tm, create_emp, 
+    modify_tm, modify_emp
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tm_sql_cfg
+  </select>
+  <select id="searchBySqlName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tm_sql_cfg
+    where sql_name like #{sqlName,jdbcType=VARCHAR}
+    ORDER BY create_tm desc
+  </select>
+</mapper>

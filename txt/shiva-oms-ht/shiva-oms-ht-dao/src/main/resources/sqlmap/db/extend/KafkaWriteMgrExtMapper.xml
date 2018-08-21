@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sf.shiva.oms.ht.mapper.extend.KafkaWriteMgrExtMapper">
+  <resultMap id="BaseResultMap" type="com.sf.shiva.oms.ht.domain.KafkaWriteManager">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="cluster_id" jdbcType="VARCHAR" property="clusterId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="topic" jdbcType="VARCHAR" property="topic" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="write_type" jdbcType="VARCHAR" property="writeType" />
+    <result column="message" jdbcType="VARCHAR" property="message" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cluster_id, name, description, topic, token, write_type, message, operator, createtime, 
+    updatetime
+  </sql>
+  <select id="searchByName" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tm_kafka_write_manager
+    WHERE name LIKE #{name,jdbcType=VARCHAR}
+    ORDER BY createtime desc
+  </select>
+</mapper>

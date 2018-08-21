@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="context1" targetRuntime="MyBatis3">
+        <plugin type="org.mybatis.generator.plugins.LeechPlugin"/>
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://10.202.4.198:3307/ht?useUnicode=true&amp;charaterEncoding=utf-8" userId="root" password="pwm"/>
+        <!-- 
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&amp;charaterEncoding=utf-8"
+			userId="admin" password="admin">
+		</jdbcConnection> -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <javaModelGenerator targetPackage="com.sf.shiva.oms.ht.domain" targetProject="E:\dds\dev-shiva-oms\trunk\doc\8-others\SHIVA-OMS-HT\code/shiva-oms-ht/shiva-oms-ht-dao/src/main/java">
+            <property name="trimStrings" value="false"/>
+        </javaModelGenerator>
+        <sqlMapGenerator targetPackage="sqlmap.db" targetProject="E:\dds\dev-shiva-oms\trunk\doc\8-others\SHIVA-OMS-HT\code/shiva-oms-ht/shiva-oms-ht-dao/src/main/resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.sf.shiva.oms.ht.mapper" targetProject="E:\dds\dev-shiva-oms\trunk\doc\8-others\SHIVA-OMS-HT\code/shiva-oms-ht/shiva-oms-ht-dao/src/main/java"/>
+        <managerGenerator targetPackage="com.sf.shiva.oms.ht.manager" targetProject="E:\dds\dev-shiva-oms\trunk\doc\8-others\SHIVA-OMS-HT\code/shiva-oms-ht/shiva-oms-ht-manager/src/main/java"/>
+        <controllerGenerator targetPackage="com.sf.shiva.oms.ht.web.controller" targetProject="E:\dds\dev-shiva-oms\trunk\doc\8-others\SHIVA-OMS-HT\code/shiva-oms-ht/shiva-oms-ht-web/src/main/java"> 
+            <property name="enableServiceResultObj" value="false"/> 
+        </controllerGenerator>
+        <jsGenerator targetPackage="assets.js" targetProject="E:\dds\dev-shiva-oms\trunk\doc\8-others\SHIVA-OMS-HT\code/shiva-oms-ht/shiva-oms-ht-web/src/main/webapp"/>
+        <serviceGenerator targetPackage="com.sf.shiva.oms.ht.service" targetProject="E:\dds\dev-shiva-oms\trunk\doc\8-others\SHIVA-OMS-HT\code/shiva-oms-ht/shiva-oms-ht-service/src/main/java"> 
+            <property name="dubboRpc" value="false"/>  
+            <property name="dubboxRest" value="false"/>  
+            <property name="resultObj" value="false"/> 
+        </serviceGenerator>
+        <htmlGenerator targetPackage="pages" targetProject="E:\dds\dev-shiva-oms\trunk\doc\8-others\SHIVA-OMS-HT\code/shiva-oms-ht/shiva-oms-ht-web/src/main/webapp"> 
+            <property name="jsPrefixPath" value="../assets/js"/>  <![CDATA[--html页面引上面生成JS路径的前缀 --]]>  
+            <property name="contextName" value=".."/><![CDATA[--引入固定CSS以及JS的前缀 --]]> 
+        </htmlGenerator>
+		<table schema="" tableName="tm_webservice_manager" domainObjectName="WebserviceManager"></table>
+		<!-- <table schema="" tableName="tt_user_http_info" domainObjectName="UserHttpInfo"></table> -->
+		<!-- <table schema="" tableName="tt_user_http_info" domainObjectName="UserHttpInfo"></table>
+		<table schema="" tableName="tt_user_rpc_info" domainObjectName="UserRpcInfo"></table> -->
+    </context>
+</generatorConfiguration>

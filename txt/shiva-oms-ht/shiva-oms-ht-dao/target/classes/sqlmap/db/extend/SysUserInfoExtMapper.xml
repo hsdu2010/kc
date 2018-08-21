@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sf.shiva.oms.ht.mapper.extend.SysUserInfoExtMapper">
+	<resultMap id="BaseResultMap" type="com.sf.shiva.oms.ht.domain.SysUserInfo">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="sys_user_uid" jdbcType="VARCHAR" property="sysUserUid" />
+		<result column="sys_username" jdbcType="VARCHAR" property="sysUsername" />
+		<result column="sys_pwd" jdbcType="VARCHAR" property="sysPwd" />
+		<result column="sys_name" jdbcType="VARCHAR" property="sysName" />
+		<result column="sys_birth" jdbcType="VARCHAR" property="sysBirth" />
+		<result column="sys_sex" jdbcType="VARCHAR" property="sysSex" />
+		<result column="sys_cert_type" jdbcType="VARCHAR" property="sysCertType" />
+		<result column="sys_cert_val" jdbcType="VARCHAR" property="sysCertVal" />
+		<result column="sys_user_prov" jdbcType="VARCHAR" property="sysUserProv" />
+		<result column="sys_prov_name" jdbcType="VARCHAR" property="sysProvName" />
+		<result column="sys_user_city" jdbcType="VARCHAR" property="sysUserCity" />
+		<result column="sys_city_name" jdbcType="VARCHAR" property="sysCityName" />
+		<result column="sys_user_img" jdbcType="VARCHAR" property="sysUserImg" />
+		<result column="sys_img_count" jdbcType="INTEGER" property="sysImgCount" />
+		<result column="createtime" jdbcType="VARCHAR" property="createtime" />
+		<result column="updatetime" jdbcType="VARCHAR" property="updatetime" />
+		<result column="updateuid" jdbcType="VARCHAR" property="updateuid" />
+		<result column="del_status" jdbcType="BIT" property="delStatus" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, sys_user_uid, sys_username, sys_pwd, sys_name,
+		sys_birth, sys_sex,
+		sys_cert_type,
+		sys_cert_val, sys_user_prov,
+		sys_prov_name, sys_user_city, sys_city_name,
+		sys_user_img,
+		sys_img_count, createtime, updatetime, updateuid, del_status
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user_info
+		where id = #{id,jdbcType=BIGINT}
+		and del_status = 0
+	</select>
+	
+	<select id="selectByUserName" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user_info
+		where sys_username = #{userName,jdbcType=VARCHAR}
+		and del_status = 0
+	</select>
+	<update id="updateByPrimaryKeySelective" parameterType="com.sf.shiva.oms.ht.domain.SysUserInfo">
+		update sys_user_info
+		<set>
+			<if test="sysUserUid != null">
+				sys_user_uid = #{sysUserUid,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUsername != null">
+				sys_username = #{sysUsername,jdbcType=VARCHAR},
+			</if>
+			<if test="sysPwd != null">
+				sys_pwd = #{sysPwd,jdbcType=VARCHAR},
+			</if>
+			<if test="sysName != null">
+				sys_name = #{sysName,jdbcType=VARCHAR},
+			</if>
+			<if test="sysBirth != null">
+				sys_birth = #{sysBirth,jdbcType=VARCHAR},
+			</if>
+			<if test="sysSex != null">
+				sys_sex = #{sysSex,jdbcType=VARCHAR},
+			</if>
+			<if test="sysCertType != null">
+				sys_cert_type = #{sysCertType,jdbcType=VARCHAR},
+			</if>
+			<if test="sysCertVal != null">
+				sys_cert_val = #{sysCertVal,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserProv != null">
+				sys_user_prov = #{sysUserProv,jdbcType=VARCHAR},
+			</if>
+			<if test="sysProvName != null">
+				sys_prov_name = #{sysProvName,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserCity != null">
+				sys_user_city = #{sysUserCity,jdbcType=VARCHAR},
+			</if>
+			<if test="sysCityName != null">
+				sys_city_name = #{sysCityName,jdbcType=VARCHAR},
+			</if>
+			<if test="sysUserImg != null">
+				sys_user_img = #{sysUserImg,jdbcType=VARCHAR},
+			</if>
+			<if test="sysImgCount != null">
+				sys_img_count = #{sysImgCount,jdbcType=INTEGER},
+			</if>
+			<if test="createtime != null">
+				createtime = #{createtime,jdbcType=VARCHAR},
+			</if>
+			<if test="updatetime != null">
+				updatetime = #{updatetime,jdbcType=VARCHAR},
+			</if>
+			<if test="updateuid != null">
+				updateuid = #{updateuid,jdbcType=VARCHAR},
+			</if>
+			<if test="delStatus != null">
+				del_status = #{delStatus,jdbcType=BIT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+		and del_status = 0
+	</update>
+
+	<update id="updateToDeleteStatus" parameterType="java.lang.Long">
+		update sys_user_info
+		set del_status = 1
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

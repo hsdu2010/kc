@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sf.shiva.oms.ht.mapper.OrderCreateMapper">
+  <resultMap id="BaseResultMap" type="com.sf.shiva.oms.ht.domain.vo.OrderCreateTemplate">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    <result column="template_content" jdbcType="VARCHAR" property="templateContent" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="create_tm" jdbcType="TIMESTAMP" property="createTm" />
+    <result column="create_emp" jdbcType="VARCHAR" property="createEmp" />
+    <result column="modify_tm" jdbcType="TIMESTAMP" property="modifyTm" />
+    <result column="modify_emp" jdbcType="VARCHAR" property="modifyEmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, template_name, template_content, create_tm, create_emp, modify_tm, modify_emp
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tt_order_create_template where create_emp = #{createEmp,jdbcType=VARCHAR}
+    and is_del = 0 
+  </select>
+  
+  <insert id="insert" parameterType="com.sf.shiva.oms.ht.domain.vo.OrderCreateTemplate">
+    insert into tt_order_create_template ( 
+    	  <include refid="Base_Column_List" />
+    )
+    values (#{record.id,jdbcType=VARCHAR}, #{record.templateName,jdbcType=VARCHAR}, #{record.templateContent,jdbcType=VARCHAR},
+     #{record.createTm,jdbcType=TIMESTAMP}, #{record.createEmp,jdbcType=VARCHAR}, #{record.modifyTm,jdbcType=TIMESTAMP}, 
+     #{record.modifyEmp,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="deleteById" parameterType="map">
+    update tt_order_create_template
+    	set is_del = 1,
+      	modify_tm = now(),
+      	modify_emp = now()
+    		where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="update">
+    update tt_order_create_template
+      set 
+      template_name = #{record.templateName,jdbcType=VARCHAR},
+      template_content = #{record.templateContent,jdbcType=VARCHAR},
+      modify_tm = now(),
+      modify_emp = #{record.modifyEmp,jdbcType=VARCHAR}
+      where id = #{record.id,jdbcType=VARCHAR}
+  </update>
+  
+   <select id="findTemplateById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tt_order_create_template where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+</mapper>

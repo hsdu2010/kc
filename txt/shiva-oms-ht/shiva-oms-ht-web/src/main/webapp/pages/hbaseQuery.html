@@ -1,0 +1,310 @@
+<section class="content-header">
+	<h1>HBase管理<small>HBase查询</small></h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> 首页</a></li>
+		<li><a href="#"><i class="fa fa-tasks"></i> HBase管理</a></li>
+		<li class="active"><i class="fa fa-search"></i> HBase查询</li>
+	</ol>
+</section>
+
+<!-- 总体布局模式 .container-fluid 类用于100%宽度-->
+<div class="content">
+	<div id="inner-content" class="container-fluid">
+		<div id="inner-row" class="row">
+			<div class="panel panel-default">
+				<!-- panel面板主体 -->
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-left" id="hbaseQueryCfgTableToolbar">
+							<button data-target=".bs-example-modal-lg" class="btn btn-default" onclick="$.hbaseQueryCfgUtils.button.add()">新增</button>
+							<form role="form" class="form-inline" id="searchForm" style="float:right;margin-left:10px;margin-bottom:16px;"
+								onsubmit="$.hbaseQueryCfgUtils.submit.search();return false;">
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" id="queryModuleName" class="form-control" name="module-name" placeholder="输入模块名搜索">
+									</div>
+								</div>
+								<button type="button" class="btn btn-default" onclick="$.hbaseQueryCfgUtils.submit.search()"><i class="glyphicon glyphicon-search"></i></button>
+							</form>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 panel-default">
+							<div class="panel panel-body">
+								<div class="panel-content">
+									<table id="hbaseQueryCfgTable" data-toggle="table" data-page-list="[10,20,30]"
+										data-pagination="true" data-cache="false" data-detail-view="false" 
+										data-show-refresh="true" data-show-columns="false"
+										data-filter-control="false" data-filter-show-clear="false"
+										data-toolbar="#hbaseQueryCfgTableToolbar" data-side-pagination="server">
+										<thead>
+											<tr>
+												<th class="hidden" data-field="id"></th>
+												<th data-field="moduleName" data-align="center">模块名称</th>
+												<th data-field="tableName" data-align="center">表名</th>
+												<th data-field="createEmp" data-align="center">创建人</th>
+												<th data-field="createTm" data-align="center">创建时间</th>
+												<th data-field="operation" data-align="center" data-width="110"
+													data-formatter="$.hbaseQueryCfgUtils.formatter.operation">操作</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 新增模态框 -->
+			<div class="modal fade bs-example-modal-lg" id="addHbaseQueryCfgDialog" role="dialog" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 class="modal-title">HBase查询</h4>
+						</div>
+						<div class="modal-body" style="padding-top:0px;">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="addHbaseQueryCfgForm">
+									<div class="col-xs-6 col-md-6 col-xs-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>模块名:</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" class="form-control" name="moduleName" placeholder="必填" required aria-required="true">
+										</div>
+									</div>
+									<div class="col-xs-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>集群:</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+										    <input type="text" class="form-control" name="cluster" readonly value="cnsz22pl0122,cnsz22pl0123,cnsz22pl0124,cnsz22pl0125">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>表名:</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" name="tableName" class="form-control" placeholder='格式为"命名空间:表名"' required aria-required="true">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;"><strong>查询类型:</strong></div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<select name="queryType" class="form-control">
+												<option value="1">RowKey</option>
+												<option value="2">Column</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6 hidden" id="addColumnFamilyDiv" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>列族</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" class="form-control" name="filterFamily" placeholder="请输入列族">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6 hidden" id="addColumnNameDiv" style="margin-top:10px;height:auto;padding-left:0px">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>列名</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" class="form-control" name="filterColumn" placeholder="请输入列名">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong style="margin-right:10px">筛选条件:</strong>
+											<span><input type="checkbox" id="addFuzzySearchBox">使用模糊搜索</span>
+											<input type="hidden" name="isFuzzySearch" value='0'>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" name="queryParam" class="form-control" placeholder="请输入查询筛选条件">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;"><strong>查询条数:</strong></div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="number" name="limitNum" class="form-control" placeholder="限制条数" value="10" min="1">
+										</div>
+									</div>
+									<div class="col-xs-12 col-md-12 col-lg-12" style="margin-top:8px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;"><strong>查询结果:</strong><span class="hide result-info">条数(<span class="result-num"></span>)</span></div>
+										<div id="queryResult" class="query-result" style="height:250px;overflow-y:scroll;border:1px solid #ccc;"></div>
+									</div>
+								</form>
+							</div>
+							<div style="clear:both"></div>
+						</div>
+						<div class="modal-footer">
+							<span class="pull-left">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button> <span class="text-danger"></span>
+							</span> 
+							<span class="pull-right">
+							<button type="button" class="btn btn-info" onclick="$.hbaseQueryCfgUtils.submit.queryHbase('#addHbaseQueryCfgForm')">查询</button>
+								<button type="button" class="btn btn-primary" id="saveBtn" onclick="$.hbaseQueryCfgUtils.submit.addHbaseQueryCfg()">保存</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 更新模态框 -->
+			<div class="modal fade bs-example-modal-lg" id="updateHbaseQueryCfgDialog" role="dialog" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 class="modal-title">HBase查询</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form" id="updateHbaseQueryCfgForm">
+									<input type="hidden" name="id">
+									<input type="hidden" name="createTm">
+									<input type="hidden" name="createEmp">
+									<div class="col-xs-6 col-md-6 col-xs-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>模块名:</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" class="form-control" name="moduleName" placeholder="必填" required aria-required="true">
+										</div>
+									</div>
+									<div class="col-xs-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>集群:</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+										    <input type="text" class="form-control" name="cluster" readonly value="cnsz22pl0122,cnsz22pl0123,cnsz22pl0124,cnsz22pl0125">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>表名:</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" name="tableName" class="form-control" placeholder='格式为"命名空间:表名"' required aria-required="true">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;"><strong>查询类型:</strong></div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<select name="queryType" class="form-control">
+												<option value="1">RowKey</option>
+												<option value="2">Column</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6 hidden" id="updateColumnFamilyDiv" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>列族</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" class="form-control" name="filterFamily" placeholder="请输入列族">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6 hidden" id="updateColumnNameDiv" style="margin-top:10px;height:auto;padding-left:0px">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong>列名</strong>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" class="form-control" name="filterColumn" placeholder="请输入列名">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;">
+											<strong style="margin-right:10px;">筛选条件:</strong>
+											<span><input type="checkbox" id="updateFuzzySearchBox">使用模糊搜索</span>
+											<input type="hidden" name="isFuzzySearch" value='0'>
+										</div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="text" name="queryParam" class="form-control" placeholder="请输入查询筛选条件">
+										</div>
+									</div>
+									<div class="col-xs-6 col-md-6 col-lg-6" style="margin-top:10px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;"><strong>查询条数:</strong></div>
+										<div class="input-group col-md-12 col-xs-12 col-lg-12">
+											<input type="number" name="limitNum" class="form-control" placeholder="限制条数" value="10" min="1">
+										</div>
+									</div>
+									<div class="col-xs-12 col-md-12 col-lg-12" style="margin-top:8px;height:auto;padding-left:0px;">
+										<div style="margin-top:8px;margin-bottom:8px;"><strong>查询结果:</strong><span class="hide result-info">条数(<span class="result-num"></span>)</span></div>
+										<div id="queryResult" class="query-result" style="height:250px;overflow-y:scroll;border:1px solid #ccc;"></div>
+									</div>
+								</form>
+							</div>
+							<div style="clear:both"></div>
+						</div>
+						<div class="modal-footer">
+							<span class="pull-left">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button> <span class="text-danger"></span>
+							</span> 
+							<span class="pull-right">
+							<button type="button" class="btn btn-info" onclick="$.hbaseQueryCfgUtils.submit.queryHbase('#updateHbaseQueryCfgForm')">查询</button>
+								<button type="button" class="btn btn-primary" id="updateBtn" onclick="$.hbaseQueryCfgUtils.submit.updateById()">保存</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 删除模态框 -->
+			<div class="modal fade bs-example-modal-sm" id="deleteHbaseQueryCfgDialog" role="dialog" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">删除</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form id="deleteHbaseQueryCfgForm" class="form-horizontal" role="form" novalidate="novalidate">
+									<input name="id" id="idForDel" type="hidden">
+									<h3 class="text-danger text-center">请确认是否删除?</h3>
+								</form>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div style="display: inline;">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-danger"
+									onclick="$.hbaseQueryCfgUtils.submit.deleteByPrimaryKey()">确定
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade bs-example-modal-lg"
+				id="displayResponseDialog" role="dialog" aria-hidden="true"
+				data-backdrop="static">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">报文内容</h4>
+						</div>
+						<div class="modal-body" style="padding-top: 0px;">
+							<textarea spellcheck="false" name="message" class="form-control"
+								style="overflow-x: scroll" rows="20" id="responseContent"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script src="../assets/js/hbaseQueryCfg.js"></script>

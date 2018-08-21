@@ -1,0 +1,214 @@
+<?xml  version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/util  http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 配置静态资源，直接映射到对应的文件夹，不被DispatcherServlet处理 -->
+	<mvc:resources mapping="/assets/css/**" location="/assets/css/" />
+	<mvc:resources mapping="/assets/fontAwesome/**" location="/assets/fontAwesome/" />
+	<mvc:resources mapping="/assets/bootstrap/**" location="/assets/bootstrap/" />
+	<mvc:resources mapping="/assets/img/**" location="/assets/img/" />
+	<mvc:resources mapping="/assets/js/**" location="/assets/js/" />
+	<mvc:resources mapping="/assets/plugin/**" location="/assets/plugin/" />
+
+	<!-- 开启controller注解支持 -->
+	<context:component-scan base-package="com.sf.shiva.oms.ht.web">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Component" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+
+	<!-- 会自动注册了validator ConversionService -->
+	<mvc:annotation-driven validator="validator"
+		conversion-service="conversionService">
+		<mvc:message-converters register-defaults="true">
+			<!-- 对声明@ResponseBody -->
+			<ref bean="fastJsonHttpMessageConverter" />
+
+			<!-- StringHttpMessageConverter编码为UTF-8，防止乱码 -->
+			<ref bean="stringHttpMessageConverter" />
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<set>
+				<bean class="com.sf.shiva.oms.ht.web.converter.StringToDateConverter">
+				</bean>
+			</set>
+		</property>
+	</bean>
+
+	<bean id="stringHttpMessageConverter"
+		class="org.springframework.http.converter.StringHttpMessageConverter">
+		<constructor-arg value="UTF-8" />
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/plain;charset=UTF-8</value>
+				<value>text/html;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="fastJsonHttpMessageConverter"
+		class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json;charset=UTF-8</value>
+			</list>
+		</property>
+		<property name="features">
+			<array>
+				<value>QuoteFieldNames</value>
+				<value>WriteDateUseDateFormat</value>
+				<value>WriteMapNullValue</value>
+				<value>WriteNullStringAsEmpty</value>
+				<value>WriteNullListAsEmpty</value>
+				<value>WriteNullNumberAsZero</value>
+				<value>BrowserCompatible</value>
+				<value>PrettyFormat</value>
+			</array>
+		</property>
+	</bean>
+
+	<!-- 用于解析,可不用 -->
+	<!-- 以下 validator ConversionService 在使用 mvc:annotation-driven 会 自动注册 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<!-- 如果不加mesageSource的配置 默认使用classpath下的 ValidationMessages.properties -->
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+
+	<!-- 国际化的消息资源文件 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<!-- 在web环境中一定要定位到classpath 否则默认到当前web应用下找 -->
+				<value>classpath:messages/ValidationMessage</value>
+				<value>classpath:messages/ExceptionMessages</value>
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="false" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="60" />
+	</bean>
+
+	<!-- 当在web.xml 中 DispatcherServlet使用 <url-pattern>/</url-pattern> 映射时，能映射静态资源 -->
+	<mvc:default-servlet-handler />
+	<!--重定向路径 -->
+	<mvc:view-controller path="/"
+		view-name="redirect:/pages/index.html" />
+	<!-- 默认的视图解析器 ， 配置支持JSP视图解析器 -->
+	<bean id="defaultJspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".html" />
+	</bean>
+
+	<!-- 文件上传相关 解析器 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!--one of the properties available;the maximum upload size in bytes 10M -->
+		<property name="maxUploadSize" value="10485760" />
+	</bean>
+
+	<!-- 控制器异常处理 -->
+	<bean id="exceptionHandlerExceptionResolver"
+		class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" />
+
+	<!--shiro配置 -->
+	<bean id="filterChainManager" class="com.sf.shiva.oms.ht.web.shiro.CustomDefaultFilterChainManager">
+		<property name="loginUrl" value="${shiro.loginUrl}" />        <!--需要登录的请求在未登录的情况下会被拦截到这个地址 -->
+		<property name="customFilters">
+			<util:map>
+				<entry key="logout" value-ref="logoutFilter" />
+				<entry key="cas" value-ref="casFilter" />
+			</util:map>
+		</property>
+		<property name="defaultFilterChainDefinitions">
+			<value>
+				/login-cas = cas
+				/assets/** = anon
+				/*.ico = anon
+				/nirvana/**	=anon
+				/logout = logout
+				/** = authc
+			</value>
+		</property>
+	</bean>
+
+	<bean id="filterChainResolver"
+		class="com.sf.shiva.oms.ht.web.shiro.CustomPathMatchingFilterChainResolver">
+		<property name="customDefaultFilterChainManager" ref="filterChainManager" />
+	</bean>
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" ref="shiroFilter" />
+		<property name="targetMethod" value="setFilterChainResolver" />
+		<property name="arguments" ref="filterChainResolver" />
+	</bean>
+
+	<!-- 退出登录过滤器 -->
+	<bean id="logoutFilter" class="com.sf.shiva.oms.ht.web.shiro.filter.CoustomLogoutFilter">
+		<property name="redirectUrl" value="${shiro.logoutUrl}" />
+	</bean>
+
+	<bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
+		<property name="failureUrl" value="${shiro.loginUrl}" />
+	</bean>
+
+	<!--配置权限核心管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="mayCasRealm" />
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+	<bean id="mayCasRealm" class="com.sf.shiva.oms.ht.web.shiro.realm.MyCasRealm">
+		<property name="casServerUrlPrefix" value="${shiro.casServerUrlPrefix}" />
+		<property name="casService" value="${shiro.casService}" />
+	</bean>
+
+
+	<!--默认缓存管理器 -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+
+
+	<bean id="ldapAuthenticationBiz" class="com.sf.shiva.oms.ht.web.shiro.LdapAuthentication">
+		<property name="url" value="${sf.ldap.url}"></property>
+		<property name="domain" value="${sf.ldap.domain}"></property>
+	</bean>
+
+	<!-- <bean id="systemUrl" class="com.sf.shiva.oms.ht.smp.web.domain.SystemUrl"> <property 
+		name="governanceUrl" value="${governance.url}"></property> <property name="disconfUrl" 
+		value="${disconf.url}"></property> <property name="autoDeployUrl" value="${autoDeploy.url}"></property> 
+		<property name="opsUrl" value="${ops.url}"></property> </bean> -->
+
+	<context:property-placeholder location="classpath:system.properties"
+		ignore-unresolvable="true" />
+
+</beans>
