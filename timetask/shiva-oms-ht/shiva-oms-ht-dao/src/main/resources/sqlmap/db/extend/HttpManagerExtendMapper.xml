@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sf.shiva.oms.ht.mapper.extend.HttpManagerExtendMapper">
+	<resultMap id="BaseResultMap" type="com.sf.shiva.oms.ht.domain.HttpManager">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
+		<result column="create_emp" jdbcType="VARCHAR" property="createEmp" />
+		<result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+		<result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+		<result column="request_template" jdbcType="VARCHAR" property="requestTemplate" />
+		<result column="response" jdbcType="VARCHAR" property="response" />
+		<result column="request_method" jdbcType="BIT" property="requestMethod" />
+		<result column="request_header" jdbcType="VARCHAR" property="requestHeader" />
+		<result column="modify_emp" jdbcType="VARCHAR" property="modifyEmp" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, remark, request_url, create_emp, createtime, updatetime,
+		request_template,
+		response, request_method, request_header, modify_emp
+	</sql>
+	<select id="searchByRemark" resultMap="BaseResultMap">
+	   SELECT 
+	   <include refid="Base_Column_List" />
+	   FROM tm_http_manager
+	   WHERE remark LIKE #{remark,jdbcType=VARCHAR}
+	   ORDER BY createtime desc
+	</select>
+</mapper>

@@ -1,0 +1,253 @@
+<section class="content-header">
+	<h1>
+		kafka管理<small>写kafka</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> 首页</a></li>
+		<li><a href="#"><i class="fa fa-tasks"></i> kafka读写</a></li>
+		<li class="active"><i class="fa fa-pencil-square-o"></i> 写kafka</li>
+	</ol>
+</section>
+<div class="content">
+	<!-- 总体布局模式 .container-fluid 类用于100%宽度-->
+	<div id="inner-content" class="container-fluid">
+		<div id="inner-row" class="row">
+			<div class="panel panel-default">
+				<!-- panel面板主体 -->
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-left"
+							id="kafkaWriteManagerTableToolbar">
+							<button id="addButton"
+								class="btn btn-default"
+								onclick="$.kafkaWriteManagerUtils.button.add()">新增</button>
+						    <form role="form" class="form-inline" id="searchForm" style="float:right;margin-left:10px;margin-bottom:16px;" onsubmit="$.kafkaWriteManagerUtils.submit.search();return false;">
+		                        <div class="form-group">
+		                            <div class="input-group">
+		                                <input type="text" class="form-control" name="name" placeholder="输入模块名搜索">
+		                            </div>
+		                        </div>
+		
+		                        <button type="button" class="btn btn-default"
+		                            onclick="$.kafkaWriteManagerUtils.submit.search()"><i class="glyphicon glyphicon-search"></i></button>
+		                    </form>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 panel-default">
+							<div class="panel panel-body">
+								<div class="panel-content">
+									<table id="kafkaWriteManagerTable" data-toggle="table"
+										data-page-list="[10,20,30]" data-pagination="true"
+										data-cache="false" data-detail-view="false"
+										data-show-refresh="true" data-show-columns="false"
+										data-filter-control="false" data-filter-show-clear="false"
+										data-toolbar="#kafkaWriteManagerTableToolbar"
+										data-side-pagination="server">
+										<thead>
+											<tr>
+												<th data-field="name" data-align="center">模块名</th>
+												<th data-field="topic" data-align="center">主题</th>
+												<th data-field="operator" data-align="center">创建者</th>
+												<th data-field="createtime" data-align="center">创建时间</th>
+												<th data-field="operation" data-align="center"
+													data-formatter="$.kafkaWriteManagerUtils.formatter.operation">操作</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 新增模态框 -->
+			<div class="modal fade" id="addKafkaWriteManagerDialog" role="dialog"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width: 55%">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">新增</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form"
+									id="addKafkaWriteManagerForm">
+									<div class="form-group">
+                                        <label class="col-sm-2 control-label">模块名 :</label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" name="name" type="text">
+                                        </div>
+                                    </div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">写入环境 :</label>
+										<div class="col-sm-9">
+											<select class="form-control" name="clusterId" id="newEnvSel">
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">写入方式 :</label>
+										<div class="col-sm-9">
+											<select class="form-control" name="writeType">
+												<option value="1">字符串</option>
+												<option value="2">FVP巴枪</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">主题 :</label>
+										<div class="col-sm-9">
+											<input type="text" name="topic" class="form-control" onblur="$.kafkaWriteManagerUtils.button.queryTopic(2)">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">校验码 :</label>
+										<div class="col-sm-9">
+											<input type="text" name="token" class="form-control" id="newToken">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">写入报文 :</label>
+										<div class="col-sm-9" style="text-align:right;">
+										    <button type="button" class="btn btn-default btn-xs"
+                                                onclick="$.utils.jsonFormatFill('newRequestBody')">格式化JSON</button>
+											<textarea name="message" spellcheck="false" class="form-control" style="overflow-x: scroll"
+												rows="20" id="newRequestBody"></textarea>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<span class="pull-left">
+								<button type="button" class="btn btn-info" onclick="$.kafkaWriteManagerUtils.sendKafkaMsg('#addKafkaWriteManagerForm')">发送</button>
+							</span> <span class="pull-right">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary" onclick="$.kafkaWriteManagerUtils.submit.addKafkaWriteManager()">保存</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 选择模态框 -->
+			<div class="modal fade" id="updateKafkaWriteManagerDialog"
+				role="dialog" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width: 55%">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">修改</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form"
+									id="updateKafkaWriteManagerForm">
+									<div class="form-group hidden">
+										<label class="col-sm-2 control-label">id :</label> <input
+											type="text" class="form-control" name="id">
+									</div>
+									<div class="form-group">
+                                        <label class="col-sm-2 control-label">模块名 :</label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" name="name" type="text">
+                                        </div>
+                                    </div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">写入环境 :</label>
+										<div class="col-sm-9">
+											<select class="form-control" name="clusterId" id="updateEnvSel">
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">写入方式 :</label>
+										<div class="col-sm-9">
+											<select class="form-control" name="writeType">
+												<option value="1">JSON</option>
+												<option value="2">FVP巴枪</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">主题 :</label>
+										<div class="col-sm-9">
+											<input type="text" name="topic" class="form-control" onblur="$.kafkaWriteManagerUtils.button.queryTopic(1)">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">校验码 :</label>
+										<div class="col-sm-9">
+											<input type="text" name="token" class="form-control" id="updateToken">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">写入报文 :</label>
+										<div class="col-sm-9" style="text-align:right;">
+										  <button type="button" class="btn btn-default btn-xs"
+                                                onclick="$.utils.jsonFormatFill('updateRequestBody')">格式化JSON</button>
+											<textarea name="message" spellcheck="false" class="form-control" style="overflow-x: scroll"
+												rows="20" id="updateRequestBody"></textarea>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<span class="pull-left">
+								<button type="button" class="btn btn-info" onclick="$.kafkaWriteManagerUtils.sendKafkaMsg('#updateKafkaWriteManagerForm')">发送</button>
+							</span> <span class="pull-right">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-primary" onclick="$.kafkaWriteManagerUtils.submit.updateKafkaWriteManager()">保存</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 删除 模态框-->
+			<div class="modal fade bs-example-modal-sm"
+				id="deleteKafkaWriteManagerDialog" role="dialog" aria-hidden="true"
+				data-backdrop="static">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title">删除</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="row-fluid">
+								<form class="form-horizontal" role="form"
+									id="deleteKafkaWriteManagerForm" novalidate="novalidate">
+
+									<input name="id" id="idForDel" type="hidden">
+
+									<h3 class="text-danger text-center">请确认是否删除?</h3>
+								</form>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<div style="display: inline;">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button type="button" class="btn btn-danger"
+									onclick="$.kafkaWriteManagerUtils.submit.deleteByPrimaryKey()">确定
+								</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="../assets/js/kafkaWriteManager.js" type="text/javascript"></script>

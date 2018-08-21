@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.sf</groupId>
+		<artifactId>shiva-oms-ht</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>shiva-oms-ht-web</artifactId>
+	<packaging>war</packaging>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>com.sf</groupId>
+			<artifactId>shiva-oms-ht-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sf</groupId>
+			<artifactId>shiva-oms-ht-service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.theborakompanioni</groupId>
+			<artifactId>thymeleaf-extras-shiro</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<!-- 域验证相关 -->
+		<dependency>
+			<groupId>org.springframework.ldap</groupId>
+			<artifactId>spring-ldap</artifactId>
+			<version>1.3.1.RELEASE</version>
+			<classifier>all</classifier>
+		</dependency>
+		 <dependency>
+            <groupId>com.sf.fvp</groupId>
+            <artifactId>fvp-dto</artifactId>
+            <version>0.0.2</version>
+        </dependency>
+		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- mvn mybatis-generator:generate -->
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.3.2</version>
+				<configuration>
+					<verbose>true</verbose>
+					<overwrite>true</overwrite>
+					<configurationFile>generatorConfig.xml</configurationFile>
+				</configuration>
+				<dependencies>
+					<!-- 数据库驱动 -->
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>${mysql.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<env.devMode>dev</env.devMode>
+				<skipAssemblyDEV>false</skipAssemblyDEV>
+				<skipAssemblyUAT>true</skipAssemblyUAT>
+				<skipAssemblyPROD>true</skipAssemblyPROD>
+			</properties>
+		</profile>
+		<profile>
+			<id>uat</id>
+			<activation>
+			</activation>
+			<properties>
+				<env.devMode>uat</env.devMode>
+				<skipAssemblyDEV>true</skipAssemblyDEV>
+				<skipAssemblyUAT>false</skipAssemblyUAT>
+				<skipAssemblyPROD>true</skipAssemblyPROD>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<activation>
+			</activation>
+			<properties>
+				<env.devMode>prod</env.devMode>
+				<skipAssemblyDEV>true</skipAssemblyDEV>
+				<skipAssemblyUAT>true</skipAssemblyUAT>
+				<skipAssemblyPROD>false</skipAssemblyPROD>
+			</properties>
+		</profile>
+	</profiles>
+
+</project>

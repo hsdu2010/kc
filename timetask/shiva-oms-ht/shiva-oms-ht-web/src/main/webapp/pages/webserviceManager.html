@@ -1,0 +1,149 @@
+<section class="content-header">
+	<h1>
+		WebService<small>管理</small>
+	</h1>
+</section>
+
+<div class="content">
+	<div id="inner-content" class="container-fluid">
+		<div id="inner-row" class="row">
+			<div class="panel panel-default">
+				<div class="panel-body">
+				    <form role="form" class="form-inline" id="searchForm"
+                        style="float: left; margin-bottom: 16px;"
+                        onsubmit="$.webserviceManagerUtils.submit.search();return false;">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="name"
+                                    placeholder="输入接口名搜索">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary"
+                            onclick="$.webserviceManagerUtils.submit.search()">搜索</button>
+                    </form>
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-left" id="webserviceManagerTableToolbar">
+							<button type="button" style="background: #51B7CF" class="btn btn-primary" data-toggle="modal"
+								data-target=".bs-example-modal-lg"
+								onclick="$.webserviceManagerUtils.button.add()">新增</button>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 panel-default">
+							<div class="panel-body panel">
+								<div class="panel-content">
+									<table id="webserviceManagerTable"
+										class="table-bordered table-striped text-center"
+										data-toggle="table"
+										data-show-refresh="true"
+										data-page-list="[10,20,30]" data-pagination="true"
+										data-cache="false" data-detail-view="false"
+										data-show-columns="false" data-filter-control="false"
+										data-filter-show-clear="false"
+										data-toolbar="#webserviceManagerTableToolbar" data-side-pagination="server"
+										data-striped="true">
+										<thead>
+											<tr>
+												<th data-field="name" data-align="center">接口名称</th>
+												<th data-field="url" data-align="center">请求地址</th>
+												<th data-field="method" data-align="center">请求方法</th>
+												<th data-field="createEmp" data-align="center">创建人</th>
+												<th data-field="createtime" data-align="center">创建时间</th>
+												<th data-field="updatetime" data-align="center">更新时间</th>
+												<th data-field="operator" data-align="center" data-width="110"
+													data-formatter="$.webserviceManagerUtils.formatter.operation">操作</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+		aria-labelledby="myLargeModalLabel" id="addWebserviceManagerDialog">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">WebService请求</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row-fluid">
+						<div class="panel-body panel" style="height: auto;">
+							<div class="panel-content">
+								<form id="addWebserviceManagerForm">
+									<div>
+										<input type="hidden" id="id" name="id" />
+										<div
+											class="input-group col-md-12 col-xs-12 col-lg-12 col-sm-12"
+											style="margin-bottom: 10px;">
+											<div class="input-group-addon" style="width: 100px;">接口名称:</div>
+											<input type="text" class="form-control" name="name" placeholder="必填"
+												 id="name">
+										</div>
+										<div
+											class="input-group col-md-12 col-xs-12 col-lg-12 col-sm-12"
+											style="margin-bottom: 10px;">
+											<div class="input-group-addon" style="width: 100px;">URL:</div>
+											<input type="text" class="form-control" name="url" placeholder="必填"
+												 id="wsUrl" onblur="$.webserviceManagerUtils.submit.queryMethodList()"
+												>
+										</div>
+										<div
+											class="input-group col-md-5 col-xs-12 col-lg-12 col-sm-12"
+											style="margin-bottom: 10px;">
+											<div class="input-group-addon" style="width: 100px;">方法名:</div>
+											<select class="form-control" id="methodList" 
+												 name="method"></select>
+										</div>
+
+										<div class="col-xs-6"
+											style="width: 40%; float: left; text-align: left; padding-left: 0px; margin-top: 10px; margin-bottom: 10px;">
+											请求参数：</div>
+										<div
+											class="input-group col-md-12 col-xs-12 col-lg-12 col-sm-12">
+											<textarea rows="10" spellcheck="false" name="requestbody" 
+												id="requestText" style="width:100%;"></textarea>
+										</div>
+
+										<div style="margin-top: 10px; margin-bottom: 10px;">
+											返回结果：</div>
+										<div
+											class="input-group col-md-12 col-xs-12 col-lg-12 col-sm-12">
+											<textarea rows="10" name="response" spellcheck="false"
+												id="response" style="width:100%;"></textarea>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+                    <span class="pull-left">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <span class="text-danger"></span>
+                    </span>
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-primary" id="saveBtn">保存</button>
+                        <button type="button" class="btn btn-info" onclick="$.webserviceManagerUtils.submit.sender()">发送</button>
+                    </span>
+                </div>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+
+<script src="../assets/js/webserviceManager.js"></script>

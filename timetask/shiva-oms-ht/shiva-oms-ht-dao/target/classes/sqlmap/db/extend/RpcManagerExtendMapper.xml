@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sf.shiva.oms.ht.mapper.extend.RpcManagerExtendMapper">
+  <resultMap id="BaseResultMap" type="com.sf.shiva.oms.ht.domain.RpcManager">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="create_emp" jdbcType="VARCHAR" property="createEmp" />
+    <result column="jar_name" jdbcType="VARCHAR" property="jarName" />
+    <result column="application_name" jdbcType="VARCHAR" property="applicationName" />
+    <result column="package_path" jdbcType="VARCHAR" property="packagePath" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="modify_emp" jdbcType="VARCHAR" property="modifyEmp" />
+    <result column="zk_url" jdbcType="VARCHAR" property="zkUrl" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_emp, jar_name, application_name, package_path, createtime, updatetime, 
+    modify_emp, zk_url, version
+  </sql>
+  <select id="searchByAppName" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM tm_rpc_manager
+    WHERE application_name LIKE #{appName, jdbcType=VARCHAR}
+    ORDER BY createtime desc
+  </select>
+</mapper>

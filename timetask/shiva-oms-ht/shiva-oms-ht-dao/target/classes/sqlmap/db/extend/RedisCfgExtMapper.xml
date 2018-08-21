@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sf.shiva.oms.ht.mapper.extend.RedisCfgExtMapper">
+  <resultMap id="BaseResultMap" type="com.sf.shiva.oms.ht.domain.RedisCfg">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="module_name" jdbcType="VARCHAR" property="moduleName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="master_name" jdbcType="VARCHAR" property="masterName" />
+    <result column="timeout" jdbcType="INTEGER" property="timeout" />
+    <result column="use_sentinel" jdbcType="TINYINT" property="useSentinel" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="query_keys" jdbcType="VARCHAR" property="queryKeys" />
+    <result column="create_tm" jdbcType="TIMESTAMP" property="createTm" />
+    <result column="create_emp" jdbcType="VARCHAR" property="createEmp" />
+    <result column="modify_tm" jdbcType="TIMESTAMP" property="modifyTm" />
+    <result column="modify_emp" jdbcType="VARCHAR" property="modifyEmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, module_name, address, master_name, timeout, use_sentinel, password, query_keys, 
+    create_tm, create_emp, modify_tm, modify_emp
+  </sql>
+  <select id="searchByModuleName" resultMap="BaseResultMap">
+   SELECT
+   <include refid="Base_Column_List"/>
+   FROM tm_redis_cfg
+   WHERE module_name LIKE #{moduleName,jdbcType=VARCHAR}
+   ORDER BY create_tm desc
+  </select>
+</mapper>

@@ -1,0 +1,116 @@
+<section class="content-header">
+    <h1>
+        Jar<small>管理</small>
+    </h1>
+</section>
+
+<div class="content">
+    <div id="inner-content" class="container-fluid">
+        <div id="inner-row" class="row">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-left" id="uploadjarManagerTableToolbar">
+                            <button type="button" style="background: #51B7CF" class="btn btn-primary" data-toggle="modal"
+                                data-target=".bs-example-modal-lg"
+                                onclick="$.uploadjarManagerUtils.button.add()">新增</button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-lg-12 col-sm-12 panel-default">
+                            <div class="panel-body panel">
+                                <div class="panel-content">
+                                    <table id="uploadjarManagerTable"
+                                        class="table-bordered table-striped text-center"
+                                        data-toggle="table"
+                                        style="width: 100%;"
+                                        data-show-refresh="true"
+                                        data-page-list="[10,20,30]" data-pagination="true"
+                                        data-cache="false" data-detail-view="false"
+                                        data-show-columns="false" data-filter-control="false"
+                                        data-filter-show-clear="false"
+                                        data-toolbar="#uploadjarManagerTableToolbar" data-side-pagination="server"
+                                        data-striped="true">
+                                        <thead>
+                                            <tr>
+                                                <th data-field="name" data-align="center">应用名</th>
+                                                <th data-field="jarName" data-align="center">文件名</th>
+                                                <th data-field="createEmp" data-align="center">创建人</th>
+                                                <th data-field="createTime" data-align="center">创建时间</th>
+                                                <th data-field="operator" data-align="center" data-width="110"
+                                                    data-formatter="$.uploadjarManagerUtils.formatter.operation">操作</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+        aria-labelledby="myLargeModalLabel" id="adduploadjarManagerDialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Jar添加</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row-fluid">
+                        <div class="panel-body panel" style="height: auto;">
+                            <div class="panel-content">
+                                <form id="adduploadjarManagerForm">
+                                    <div>
+                                        <input type="hidden" id="id" name="id" />
+                                        <div class="form-group">
+                                            <div class="col-sm-6">
+                                                <div class="col-sm-4" style="margin-bottom: 10px;">
+	                                                <strong>应用名：</strong>
+	                                            </div>
+	                                            <div class="col-sm-12">
+	                                                 <input type="text" class="form-control" name="name" placeholder="必填"
+	                                                 id="name">
+	                                            </div>
+                                            </div>
+                                            <div class="col-sm-6">
+	                                            <div class="col-sm-4" style="margin-bottom: 10px;">
+	                                                <strong>上传jar包：</strong>
+	                                            </div>
+	                                            <div class="col-sm-12">
+	                                             <div style="height:54px;">
+	                                                <a href="javascript:;" class="a-upload"> 请选择文件上传 <input
+	                                                    type="file" name="uploadjar" id="uploadjar">
+	                                                </a>
+	                                                <div class="showFileName"></div>
+	                                                <div class="fileerrorTip"></div>
+	                                                <input id="isUploaded" type="hidden" value="0">
+	                                            </div>
+	                                            </div>
+                                            </div>
+	                                    </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-primary" onclick="$.uploadjarManagerUtils.submit.addUploadjarManager()">保存</button>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+</div>
+
+<script src="../assets/js/uploadjarManager.js"></script>
