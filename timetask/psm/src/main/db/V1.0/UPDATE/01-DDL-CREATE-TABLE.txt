@@ -1,0 +1,24 @@
+/home/hdfs/app/hbase/bin/hbase shell <<EOF
+def gen_splits(num_regions)
+	results=[]
+	for result in 1 .. num_regions-1
+		if num_regions <= 10 then
+			results.push(result)
+		elsif num_regions <= 100 then
+			results.push("%02d" % [result])
+		elsif num_regions <= 1000 then
+			results.push("%03d" % [result])
+		elsif num_regions <= 10000 then
+			results.push("%04d" % [result])
+		end
+	end
+	return results
+end
+
+create_namespace 'shiva_oms_psm'
+create 'shiva_oms_psm:package_status', {NAME => 'cf1', BLOOMFILTER => 'ROW', COMPRESSION => 'SNAPPY', VERSIONS => '1',TTL=>10368000, REPLICATION_SCOPE => '1'},{ SPLITS => gen_splits(40) }
+create 'shiva_oms_psm:package_status_record', {NAME => 'cf1', BLOOMFILTER => 'ROW', COMPRESSION => 'SNAPPY', VERSIONS => '1',TTL=>10368000, REPLICATION_SCOPE => '1'},{ SPLITS => gen_splits(235) }
+create 'shiva_oms_psm:package_status_send_load', {NAME => 'cf1', BLOOMFILTER => 'ROW', COMPRESSION => 'SNAPPY', VERSIONS => '1',TTL=>10368000, REPLICATION_SCOPE => '1'}
+create 'shiva_oms_psm:package_settle_claims', {NAME => 'cf1', BLOOMFILTER => 'ROW', COMPRESSION => 'SNAPPY', VERSIONS => '1',TTL=>10368000, REPLICATION_SCOPE => '1'}
+
+EOF

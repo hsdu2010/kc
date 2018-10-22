@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           ">
+	<!-- ===================================== KafkaSpout配置信息 begin ===================================== -->
+
+	<!-- FVP巴枪配置 -->
+	<bean id="fvpBarSpoutConfig" class="com.sf.shiva.oms.psm.common.kafka.KafkaSpoutConfig">
+		<property name="monitorUrl" value="${kafka.spout.fvp.bar.monitorUrl:null}" />
+		<property name="clusterName" value="${kafka.spout.fvp.bar.clusterName:null}" />
+		<property name="topic" value="${kafka.spout.fvp.bar.topic:null}" />
+		<property name="systemId" value="${kafka.spout.fvp.bar.systemId:null}" />
+		<property name="token" value="${kafka.spout.fvp.bar.token:null}" />
+		<property name="spoutId" value="${kafka.spout.fvp.bar.spoutId:null}" />
+	</bean>
+
+	<!-- SGS派件配置 -->
+	<bean id="deliveryStatusSpoutConfig" class="com.sf.shiva.oms.psm.common.kafka.KafkaSpoutConfig">
+		<property name="monitorUrl" value="${kafka.spout.sgs.deliveryStatus.monitorUrl:null}" />
+		<property name="clusterName" value="${kafka.spout.sgs.deliveryStatus.clusterName:null}" />
+		<property name="topic" value="${kafka.spout.sgs.deliveryStatus.topic:null}" />
+		<property name="systemId" value="${kafka.spout.sgs.deliveryStatus.systemId:null}" />
+		<property name="token" value="${kafka.spout.sgs.deliveryStatus.token:null}" />
+		<property name="spoutId" value="${kafka.spout.sgs.deliveryStatus.spoutId:null}" />
+	</bean>
+	
+	<!-- COS理赔配置 -->
+	<bean id="claimSpoutConfig" class="com.sf.shiva.oms.psm.common.kafka.KafkaSpoutConfig">
+	   <property name="monitorUrl" value="${kafka.spout.cos.claim.monitorUrl:null}" />
+	   <property name="clusterName" value="${kafka.spout.cos.claim.clusterName:null}" />
+	   <property name="topic" value="${kafka.spout.cos.claim.topic:null}" />
+	   <property name="systemId" value="${kafka.spout.cos.claim.systemId:null}" />
+	   <property name="token" value="${kafka.spout.cos.claim.token:null}" />
+	   <property name="spoutId" value="${kafka.spout.cos.claim.spoutId:null}" />
+	</bean>
+	<!-- ===================================== KafkaSpout配置信息 end ===================================== -->
+
+
+	<!-- ===================================== KAFKA生产者配置文件 begin ===================================== -->
+
+	<!--包裹状态信息推送下游系统 -->
+	<bean id="packageStatusSendProducer" class="com.sf.shiva.oms.psm.common.kafka.CustomKafkaProducer">
+		<property name="monitorUrl" value="${kafka.producer.pacakage.status.monitorUrl:null}" />
+		<property name="clusterName" value="${kafka.producer.pacakage.status.clusterName:null}" />
+		<property name="topic" value="${kafka.producer.pacakage.status.topic:null}" />
+		<property name="token" value="${kafka.producer.pacakage.status.token:null}" />
+		<property name="producerPoolSize" value="${kafka.producer.pacakage.status.producerPoolSize:4}" />
+	</bean>
+
+	<!-- ===================================== KAFKA生产者配置文件 end ===================================== -->
+</beans>
