@@ -1,0 +1,10 @@
+Eclipse使用AmaterasUML生成UML图:
+
+下载 https://zh.osdn.net/projects/amateras/downloads/56447/AmaterasUML_1.3.4.zip/ 
+
+把三个jar包放于eclipse plugin去
+
+然后在eclipse里新建AmaterasUML  把类拖拽过去即可
+
+GEF下载
+http://www.eclipse.org/gef/downloads/index.php
